@@ -1,8 +1,9 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Amplifies the audio in Audacity using the mod-script-pipe.
+"""Amplifies the audio in Audacity using the mod-script-pipe, changes the speed ( for copyright ), and exports the file as MP3.
 
-Make sure Audacity is running first, an audio part is selected and that mod-script-pipe is enabled
+Make sure Audacity is running first, an audio part is selected, and that mod-script-pipe is enabled
 before running this script.
 
 Requires Python 2.7 or later. Python 3 is strongly recommended.
@@ -61,11 +62,24 @@ def do_command(command):
     print("Rcvd: <<< \n" + response)
     return response
 
-def amplify_audio(ratio=0.9, allow_clipping=False):
+def amplify_audio(ratio=3, allow_clipping=False):
     allow_clipping_str = 'True' if allow_clipping else 'False'
     command = f'Amplify: Ratio={ratio} AllowClipping={allow_clipping_str}'
     response = do_command(command)
     print("Amplify Response:", response)
 
+def change_speed(percentage=-40):
+    command = f'ChangeSpeed: Percentage={percentage}'
+    response = do_command(command)
+    print("Change Speed Response:", response)
+
+def export_audio(file_path, format="MP3"):
+    command = f'Export2: Filename="{file_path}" Format={format}'
+    response = do_command(command)
+    print("Export Response:", response)
+
 if __name__ == "__main__":
     amplify_audio()
+    change_speed(-40)  # Change speed to 60% of the original speed
+    downloads_folder = os.path.expanduser("~/Downloads")
+    export_audio(os.path.join(downloads_folder, "exported.mp3"))
